@@ -32,11 +32,13 @@ class ConfigureLogging extends BootstrapConfigureLogging
      */
     protected function registerLogger(Application $app)
     {
-        $app->instance('log', $log = new Writer(
-            new Logger($app->environment()), $app['events'])
-        );
-
-        return $log;
+        if ($app['config']->get('app.log') == 'fluent') {
+            $app->instance('log', $log = new Writer(
+                new Logger($app->environment()), $app['events'])
+            );
+            return $log;
+        } else
+            return parent::registerLogger($app);
     }
 
     /**

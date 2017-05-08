@@ -1,5 +1,5 @@
 {
-  "name": "ytake/laravel-fluent-logger",
+  "name": "maksimru/laravel-fluent-logger",
   "description": "fluent logger for laravel and lumen",
   "minimum-stability": "stable",
   "license": "MIT",
@@ -12,8 +12,8 @@
   ],
   "authors": [
     {
-      "name": "Yuuki Takezawa",
-      "email": "yuuki.takezawa@comnect.jp.net"
+      "name": "Maksim Martianov",
+      "email": "maxmtmn@gmail.com"
     }
   ],
   "require": {

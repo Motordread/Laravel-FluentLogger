@@ -61,17 +61,6 @@ $ php artisan vendor:publish --tag=log
 $ php artisan vendor:publish --provider="Ytake\LaravelFluent\LogServiceProvider"
 ```
 
-### Basic Push Handler
-
-your Application service provider
-```php
-
-public function boot()
-{
-    $this->app['fluent.handler']->pushHandler();
-}
-```
-
 ### All logs to fluentd
 
 in Application Http\Kernel class
@@ -79,20 +68,14 @@ in Application Http\Kernel class
 override bootstrappers property
 
 ```php
-    /**
-     * The bootstrap classes for the application.
-     *
-     * @var array
-     */
-    protected $bootstrappers = [
-        'Illuminate\Foundation\Bootstrap\DetectEnvironment',
-        'Illuminate\Foundation\Bootstrap\LoadConfiguration',
-        \Ytake\LaravelFluent\ConfigureLogging::class,
-        'Illuminate\Foundation\Bootstrap\HandleExceptions',
-        'Illuminate\Foundation\Bootstrap\RegisterFacades',
-        'Illuminate\Foundation\Bootstrap\RegisterProviders',
-        'Illuminate\Foundation\Bootstrap\BootProviders',
-    ];
+    public function __construct(Application $app, Router $router)
+    {
+        foreach ($this->bootstrappers as $index => $bootstrapper) {
+            if($bootstrapper == \Illuminate\Foundation\Bootstrap\ConfigureLogging::class)
+                $this->bootstrappers[$index] = \Ytake\LaravelFluent\ConfigureLogging::class;
+        }
+        parent::__construct($app, $router);
+    }
 ```
 
 in Application Console\Kernel class
@@ -100,16 +83,14 @@ in Application Console\Kernel class
 override bootstrappers property
 
 ```php
-    protected $bootstrappers = [
-        'Illuminate\Foundation\Bootstrap\DetectEnvironment',
-        'Illuminate\Foundation\Bootstrap\LoadConfiguration',
-        \Ytake\LaravelFluent\ConfigureLogging::class,
-        'Illuminate\Foundation\Bootstrap\HandleExceptions',
-        'Illuminate\Foundation\Bootstrap\RegisterFacades',
-        'Illuminate\Foundation\Bootstrap\SetRequestForConsole',
-        'Illuminate\Foundation\Bootstrap\RegisterProviders',
-        'Illuminate\Foundation\Bootstrap\BootProviders',
-    ];
+    public function __construct(Application $app, Dispatcher $events)
+    {
+        foreach ($this->bootstrappers as $index => $bootstrapper) {
+            if($bootstrapper == \Illuminate\Foundation\Bootstrap\ConfigureLogging::class)
+                $this->bootstrappers[$index] = \Ytake\LaravelFluent\ConfigureLogging::class;
+        }
+        parent::__construct($app, $events);
+    }
 ```
 
 edit config/app.php
