@@ -50,6 +50,14 @@ class FluentHandler extends AbstractProcessingHandler
     }
 
     /**
+     * @return LoggerInterface
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
+    /**
      * @param array $record
      */
     protected function write(array $record)
@@ -61,6 +69,7 @@ class FluentHandler extends AbstractProcessingHandler
                 'message' => $record['message'],
                 'context' => $record['context'],
                 'extra'   => $record['extra'],
+                'severity' => $record['level_name']
             ]
         );
     }
@@ -94,13 +103,5 @@ class FluentHandler extends AbstractProcessingHandler
         }
 
         return $tag;
-    }
-
-    /**
-     * @return LoggerInterface
-     */
-    public function getLogger()
-    {
-        return $this->logger;
     }
 }
