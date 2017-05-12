@@ -20,6 +20,7 @@ namespace Ytake\LaravelFluent;
 use Fluent\Logger\LoggerInterface;
 use Monolog\Logger;
 use Monolog\Handler\AbstractProcessingHandler;
+use Psr\Log\LogLevel;
 
 /**
  * Class FluentHandler
@@ -43,9 +44,7 @@ class FluentHandler extends AbstractProcessingHandler
     public function __construct(LoggerInterface $logger, $tagFormat = null, $level = Logger::DEBUG, $bubble = true)
     {
         $this->logger = $logger;
-        if ($tagFormat !== null) {
-            $this->tagFormat = $tagFormat;
-        }
+        $this->tagFormat = $tagFormat;
         parent::__construct($level, $bubble);
     }
 
@@ -63,6 +62,20 @@ class FluentHandler extends AbstractProcessingHandler
     protected function write(array $record)
     {
         $tag = $this->populateTag($record);
+
+        $errors = array(
+            LogLevel::NOTICE => "Notice",
+            LogLevel::WARNING => "Warning",
+            LogLevel::ERROR => "Fatal error"
+        );
+
+        //compatibility with google error-reporting
+        if (is_null($tag) && in_array($this->getLowerCaseLevelName($record), array_keys($errors))) {
+            $tag = 'errors';
+            $recognized_error_type = $errors[strtolower($record['level_name'])];
+            $record['message'] = 'PHP ' . $recognized_error_type . ' ' . $record['message'];
+        }
+
         $this->logger->post(
             $tag,
             [
@@ -103,5 +116,10 @@ class FluentHandler extends AbstractProcessingHandler
         }
 
         return $tag;
+    }
+
+    public function getLowerCaseLevelName($record)
+    {
+        return strtolower($record['level_name']);
     }
 }
