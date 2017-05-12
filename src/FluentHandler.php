@@ -71,7 +71,6 @@ class FluentHandler extends AbstractProcessingHandler
 
         //compatibility with google error-reporting
         if (is_null($tag) && in_array($this->getLowerCaseLevelName($record), array_keys($errors))) {
-            $tag = 'errors';
             $recognized_error_type = $errors[strtolower($record['level_name'])];
             $record['message'] = 'PHP ' . $recognized_error_type . ' ' . $record['message'];
         }
