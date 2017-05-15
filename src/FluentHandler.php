@@ -61,28 +61,37 @@ class FluentHandler extends AbstractProcessingHandler
      */
     protected function write(array $record)
     {
-        $tag = $this->populateTag($record);
+        $payload = [
+            'message' => $record['message'],
+            'context' => $record['context'],
+            'extra' => $record['extra'],
+        ];
 
-        $errors = array(
-            LogLevel::NOTICE => "Notice",
-            LogLevel::WARNING => "Warning",
-            LogLevel::ERROR => "Fatal error"
-        );
+        if ($this->tagFormat != 'google')
+            $tag = $this->populateTag($record);
+        else {
+            //compatibility with google error-reporting
 
-        //compatibility with google error-reporting
-        if (is_null($tag) && in_array($this->getLowerCaseLevelName($record), array_keys($errors))) {
-            $recognized_error_type = $errors[strtolower($record['level_name'])];
-            $record['message'] = 'PHP ' . $recognized_error_type . ' ' . $record['message'];
+            $errors = array(
+                LogLevel::NOTICE => "Notice",
+                LogLevel::WARNING => "Warning",
+                LogLevel::ERROR => "Fatal error"
+            );
+
+            if (in_array($this->getLowerCaseLevelName($record), array_keys($errors))) {
+                $recognized_error_type = $errors[strtolower($record['level_name'])];
+                $record['message'] = 'PHP ' . $recognized_error_type . ' ' . $record['message'];
+                $tag = 'errors';
+            } else {
+                $tag = $record['level_name'];
+            }
+
+            $payload['severity'] = $record['level_name'];
         }
 
         $this->logger->post(
             $tag,
-            [
-                'message' => $record['message'],
-                'context' => $record['context'],
-                'extra'   => $record['extra'],
-                'severity' => $record['level_name']
-            ]
+            $payload
         );
     }
 
