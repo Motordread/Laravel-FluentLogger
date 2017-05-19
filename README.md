@@ -1,20 +1,8 @@
 # laravel-fluent-logger
-fluent logger for laravel
+fluent logger for laravel with support of google stackdriver logger format
 (with Monolog handler for Fluentd )
 
 [fluentd](http://www.fluentd.org/)
-
-[![Build Status](http://img.shields.io/travis/ytake/Laravel-FluentLogger/master.svg?style=flat-square)](https://travis-ci.org/ytake/Laravel-FluentLogger)
-[![Coverage Status](http://img.shields.io/coveralls/ytake/Laravel-FluentLogger/master.svg?style=flat-square)](https://coveralls.io/r/ytake/Laravel-FluentLogger?branch=master)
-[![Dependency Status](https://www.versioneye.com/user/projects/563e07fa4d415e001b0000ac/badge.svg?style=flat)](https://www.versioneye.com/user/projects/563e07fa4d415e001b0000ac)
-[![Scrutinizer Code Quality](http://img.shields.io/scrutinizer/g/ytake/Laravel-FluentLogger.svg?style=flat)](https://scrutinizer-ci.com/g/ytake/Laravel-FluentLogger/?branch=master)
-
-[![License](http://img.shields.io/packagist/l/ytake/laravel-fluent-logger.svg?style=flat-square)](https://packagist.org/packages/ytake/laravel-fluent-logger)
-[![Latest Version](http://img.shields.io/packagist/v/ytake/laravel-fluent-logger.svg?style=flat-square)](https://packagist.org/packages/ytake/laravel-fluent-logger)
-[![Total Downloads](http://img.shields.io/packagist/dt/ytake/laravel-fluent-logger.svg?style=flat-square)](https://packagist.org/packages/ytake/laravel-fluent-logger)
-[![StyleCI](https://styleci.io/repos/45625024/shield)](https://styleci.io/repos/45625024)
-
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/2ac5d569-39c0-4a80-900d-03760287acba/mini.png)](https://insight.sensiolabs.com/projects/2ac5d569-39c0-4a80-900d-03760287acba)
 
 ## usage
 
@@ -22,14 +10,14 @@ fluent logger for laravel
 Require this package with Composer
 
 ```bash
-$ composer require ytake/laravel-fluent-logger
+$ composer require maksimru/laravel-fluent-logger
 ```
 
 or composer.json
 
 ```json
 "require": {
-  "ytake/laravel-fluent-logger": "~1.0"
+  "maksimru/laravel-fluent-logger": "~1.0"
 },
 ```
 
@@ -164,7 +152,7 @@ class Application extends \Laravel\Lumen\Application
 </match>
 ```
 
-## Author ##
+## Original Author ##
 
 - [Yuuki Takezawa](mailto:yuuki.takezawa@comnect.jp.net) ([twitter](http://twitter.com/ex_takezawa))
 
