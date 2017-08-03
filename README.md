@@ -4,7 +4,11 @@ fluent logger for laravel with support of google stackdriver logger format
 
 [fluentd](http://www.fluentd.org/)
 
-## usage
+## Versions
+
+Laravel 5.3  ~1.0
+
+Laravel 5.4  ~2.0
 
 ### Installation For Laravel and Lumen
 Require this package with Composer
@@ -17,7 +21,7 @@ or composer.json
 
 ```json
 "require": {
-  "maksimru/laravel-fluent-logger": "~1.0"
+  "maksimru/laravel-fluent-logger": "~2.0"
 },
 ```
 
@@ -50,36 +54,6 @@ $ php artisan vendor:publish --provider="Ytake\LaravelFluent\LogServiceProvider"
 ```
 
 ### All logs to fluentd
-
-in Application Http\Kernel class
-
-override bootstrappers property
-
-```php
-    public function __construct(Application $app, Router $router)
-    {
-        foreach ($this->bootstrappers as $index => $bootstrapper) {
-            if($bootstrapper == \Illuminate\Foundation\Bootstrap\ConfigureLogging::class)
-                $this->bootstrappers[$index] = \Ytake\LaravelFluent\ConfigureLogging::class;
-        }
-        parent::__construct($app, $router);
-    }
-```
-
-in Application Console\Kernel class
-
-override bootstrappers property
-
-```php
-    public function __construct(Application $app, Dispatcher $events)
-    {
-        foreach ($this->bootstrappers as $index => $bootstrapper) {
-            if($bootstrapper == \Illuminate\Foundation\Bootstrap\ConfigureLogging::class)
-                $this->bootstrappers[$index] = \Ytake\LaravelFluent\ConfigureLogging::class;
-        }
-        parent::__construct($app, $events);
-    }
-```
 
 edit config/app.php
 ```php

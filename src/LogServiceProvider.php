@@ -17,7 +17,10 @@
  */
 namespace Ytake\LaravelFluent;
 
+use Fluent\Logger\FluentLogger;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\Foundation\Application;
+use Monolog\Logger;
 
 /**
  * Class LogServiceProvider
@@ -42,6 +45,35 @@ class LogServiceProvider extends ServiceProvider
                 $app['config']->get('fluent')
             );
         });
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function createLogger(Application $app)
+    {
+        if ($app['config']->get('app.log') == 'fluent') {
+            $app->instance('log', $log = new Writer(
+                new Logger($app->environment()), $app['events'])
+            );
+            $this->configureFluentHandler($app, $log);
+            return $log;
+        }
+    }
+
+    /**
+     * pushHandler Fluentd
+     * @param Application $app
+     * @param Writer $log
+     */
+    protected function configureFluentHandler(Application $app, Writer $log)
+    {
+        $configure = $app['config']->get('fluent');
+        $host = $configure['host'] ? $configure['host'] : FluentLogger::DEFAULT_ADDRESS;
+        $port = $configure['port'] ? $configure['port'] : FluentLogger::DEFAULT_LISTEN_PORT;
+        $options = $configure['options'] ? $configure['options'] : [];
+        $tagFormat = isset($configure['tagFormat']) ? $configure['tagFormat'] : null;
+        $log->useFluentLogger($host, $port, $options, $tagFormat);
     }
 
     /**
