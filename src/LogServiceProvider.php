@@ -19,7 +19,6 @@ namespace Ytake\LaravelFluent;
 
 use Fluent\Logger\FluentLogger;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Contracts\Foundation\Application;
 use Monolog\Logger;
 
 /**
@@ -39,36 +38,39 @@ class LogServiceProvider extends ServiceProvider
         $this->mergeConfigFrom($configPath, 'fluent');
         $this->publishes([$configPath => config_path('fluent.php')], 'log');
 
-        $this->app->bind('fluent.handler', function ($app) {
-            return new RegisterPushHandler(
-                $app['Illuminate\Contracts\Logging\Log'],
-                $app['config']->get('fluent')
-            );
-        });
+        if ($this->app['config']->get('app.log') == 'fluent') {
+            $this->app->singleton('log', function () {
+                return $this->createLogger();
+            });
+
+            $this->app->bind('fluent.handler', function () {
+                return new RegisterPushHandler(
+                    $this->app['Illuminate\Contracts\Logging\Log'],
+                    $this->app['config']->get('fluent')
+                );
+            });
+        }
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function createLogger(Application $app)
+    protected function createLogger()
     {
-        if ($app['config']->get('app.log') == 'fluent') {
-            $app->instance('log', $log = new Writer(
-                new Logger($app->environment()), $app['events'])
-            );
-            $this->configureFluentHandler($app, $log);
-            return $log;
-        }
+        $this->app->instance('log', $log = new Writer(
+            new Logger($this->app->environment()), $this->app['events'])
+        );
+        $this->configureFluentHandler($log);
+        return $log;
     }
 
     /**
      * pushHandler Fluentd
-     * @param Application $app
      * @param Writer $log
      */
-    protected function configureFluentHandler(Application $app, Writer $log)
+    protected function configureFluentHandler(Writer $log)
     {
-        $configure = $app['config']->get('fluent');
+        $configure = $this->app['config']->get('fluent');
         $host = $configure['host'] ? $configure['host'] : FluentLogger::DEFAULT_ADDRESS;
         $port = $configure['port'] ? $configure['port'] : FluentLogger::DEFAULT_LISTEN_PORT;
         $options = $configure['options'] ? $configure['options'] : [];
