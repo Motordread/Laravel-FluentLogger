@@ -8,7 +8,8 @@
     "log",
     "logging",
     "fluent",
-    "lumen"
+    "lumen",
+    "stackdriver"
   ],
   "authors": [
     {
