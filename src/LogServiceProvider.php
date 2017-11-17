@@ -17,14 +17,13 @@
  */
 namespace Ytake\LaravelFluent;
 
+use Monolog\Logger as Monolog;
 use Fluent\Logger\FluentLogger;
-use Illuminate\Support\ServiceProvider;
-use Monolog\Logger;
 
 /**
  * Class LogServiceProvider
  */
-class LogServiceProvider extends ServiceProvider
+class LogServiceProvider extends \Illuminate\Log\LogServiceProvider
 {
     /**
      * {@inheritdoc}
@@ -49,18 +48,24 @@ class LogServiceProvider extends ServiceProvider
                     $this->app['config']->get('fluent')
                 );
             });
+
+            parent::register();
         }
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function createLogger()
+    public function createLogger()
     {
-        $this->app->instance('log', $log = new Writer(
-            new Logger($this->app->environment()), $this->app['events'])
+        $log = new Writer(
+            new Monolog($this->channel()), $this->app['events']
         );
-        $this->configureFluentHandler($log);
+        if ($this->app->hasMonologConfigurator()) {
+            call_user_func($this->app->getMonologConfigurator(), $log->getMonolog());
+        } else {
+            $this->configureHandler($log);
+        }
         return $log;
     }
 
@@ -78,23 +83,4 @@ class LogServiceProvider extends ServiceProvider
         $log->useFluentLogger($host, $port, $options, $tagFormat);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function compiles()
-    {
-        return [
-            base_path() . '/vendor/ytake/laravel-fluent-logger/src/LogServiceProvider.php',
-            base_path() . '/vendor/ytake/laravel-fluent-logger/src/ConfigureLogging.php',
-            base_path() . '/vendor/ytake/laravel-fluent-logger/src/FluentHandler.php',
-            base_path() . '/vendor/ytake/laravel-fluent-logger/src/RegisterPushHandler.php',
-            base_path() . '/vendor/ytake/laravel-fluent-logger/src/Writer.php',
-            base_path() . '/vendor/fluent/logger/src/Entity.php',
-            base_path() . '/vendor/fluent/logger/src/Exception.php',
-            base_path() . '/vendor/fluent/logger/src/FluentLogger.php',
-            base_path() . '/vendor/fluent/logger/src/JsonPacker.php',
-            base_path() . '/vendor/fluent/logger/src/LoggerInterface.php',
-            base_path() . '/vendor/fluent/logger/src/PackerInterface.php',
-        ];
-    }
 }

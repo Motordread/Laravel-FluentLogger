@@ -10,6 +10,8 @@ Laravel 5.3  ~1.0
 
 Laravel 5.4  ~2.0
 
+Laravel 5.5  ~3.0
+
 ### Installation For Laravel and Lumen
 Require this package with Composer
 
