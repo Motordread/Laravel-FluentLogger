@@ -18,16 +18,16 @@
     }
   ],
   "require": {
-    "php": ">=5.5.9",
+    "php": ">=7",
     "fluent/logger": "~1.0",
-    "illuminate/log": "~5.0",
-    "illuminate/support": "~5.0",
-    "illuminate/config": "~5.0",
-    "illuminate/contracts": "~5.0",
-    "illuminate/container": "~5.0"
+    "illuminate/log": "~5.5",
+    "illuminate/support": "~5.5",
+    "illuminate/config": "~5.5",
+    "illuminate/contracts": "~5.5",
+    "illuminate/container": "~5.5"
   },
   "require-dev": {
-    "phpunit/phpunit": "4.*",
+    "phpunit/phpunit": "^6.0",
     "satooshi/php-coveralls": "*"
   },
   "autoload": {
