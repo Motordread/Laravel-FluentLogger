@@ -37,20 +37,18 @@ class LogServiceProvider extends \Illuminate\Log\LogServiceProvider
         $this->mergeConfigFrom($configPath, 'fluent');
         $this->publishes([$configPath => config_path('fluent.php')], 'log');
 
-        if ($this->app['config']->get('app.log') == 'fluent') {
-            $this->app->singleton('log', function () {
-                return $this->createLogger();
-            });
+        $this->app->singleton('log', function () {
+            return $this->createLogger();
+        });
 
-            $this->app->bind('fluent.handler', function () {
-                return new RegisterPushHandler(
-                    $this->app['Illuminate\Contracts\Logging\Log'],
-                    $this->app['config']->get('fluent')
-                );
-            });
+        $this->app->bind('fluent.handler', function () {
+            return new RegisterPushHandler(
+                $this->app['Illuminate\Contracts\Logging\Log'],
+                $this->app['config']->get('fluent')
+            );
+        });
 
-            parent::register();
-        }
+        parent::register();
     }
 
     /**
