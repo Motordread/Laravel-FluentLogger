@@ -80,7 +80,7 @@ class FluentHandler extends AbstractProcessingHandler
 
             if (in_array($this->getLowerCaseLevelName($record), array_keys($errors))) {
                 $recognized_error_type = $errors[strtolower($record['level_name'])];
-                $payload['message'] = 'PHP ' . $recognized_error_type . ': ' . $record['context']['exception'];
+                $payload['message'] = 'PHP ' . $recognized_error_type . ': ' . (isset($record['context']['exception']) ? $record['context']['exception'] : $record['message']);
                 $tag = 'errors';
             } else {
                 $tag = $record['level_name'];
