@@ -18,24 +18,23 @@
 namespace Ytake\LaravelFluent;
 
 use Fluent\Logger\FluentLogger;
-use Illuminate\Contracts\Logging\Log as LoggerInterface;
 
 /**
  * Class RegisterPushHandler
  */
 class RegisterPushHandler
 {
-    /** @var LoggerInterface|\Illuminate\Log\Writer */
+    /** @var \Illuminate\Log\Writer */
     protected $logger;
 
     /** @var array */
     protected $config;
 
     /**
-     * @param LoggerInterface $logger
+     * @param \Illuminate\Log\Writer $logger
      * @param array           $config
      */
-    public function __construct(LoggerInterface $logger, array $config)
+    public function __construct(\Illuminate\Log\Writer $logger, array $config)
     {
         $this->logger = $logger;
         $this->config = $config;
