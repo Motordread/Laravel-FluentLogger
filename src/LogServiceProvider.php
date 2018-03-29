@@ -17,14 +17,13 @@
  */
 namespace Ytake\LaravelFluent;
 
-use Monolog\Logger as Monolog;
-use Fluent\Logger\FluentLogger;
-
 /**
  * Class LogServiceProvider
  */
 class LogServiceProvider extends \Illuminate\Log\LogServiceProvider
 {
+
+
     /**
      * {@inheritdoc}
      */
@@ -36,49 +35,14 @@ class LogServiceProvider extends \Illuminate\Log\LogServiceProvider
         $configPath = __DIR__ . '/config/fluent.php';
         $this->mergeConfigFrom($configPath, 'fluent');
         $this->publishes([$configPath => config_path('fluent.php')], 'log');
-
-        $this->app->singleton('log', function () {
-            return $this->createLogger();
-        });
-
-        $this->app->bind('fluent.handler', function () {
-            return new RegisterPushHandler(
-                $this->app['Illuminate\Contracts\Logging\Log'],
-                $this->app['config']->get('fluent')
-            );
-        });
-
         parent::register();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function createLogger()
+    public function boot()
     {
-        $log = new Writer(
-            new Monolog($this->channel()), $this->app['events']
-        );
-        if ($this->app->hasMonologConfigurator()) {
-            call_user_func($this->app->getMonologConfigurator(), $log->getMonolog());
-        } else {
-            $this->configureHandler($log);
-        }
-        return $log;
-    }
-
-    /**
-     * pushHandler Fluentd
-     * @param Writer $log
-     */
-    protected function configureFluentHandler(Writer $log)
-    {
-        $configure = $this->app['config']->get('fluent');
-        $host = $configure['host'] ? $configure['host'] : FluentLogger::DEFAULT_ADDRESS;
-        $port = $configure['port'] ? $configure['port'] : FluentLogger::DEFAULT_LISTEN_PORT;
-        $options = $configure['options'] ? $configure['options'] : [];
-        $tagFormat = isset($configure['tagFormat']) ? $configure['tagFormat'] : null;
-        $log->useFluentLogger($host, $port, $options, $tagFormat);
+        $this->app['log']->extend('fluent', function ($app, $config) {
+            return (new LaravelFluentLogger($app, $config))->getLogger();
+        });
     }
 
 }

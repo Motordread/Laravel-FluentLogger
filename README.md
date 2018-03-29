@@ -12,6 +12,8 @@ Laravel 5.4  ~2.0
 
 Laravel 5.5  ~3.0
 
+Laravel 5.6  ~4.0
+
 ### Installation For Laravel and Lumen
 Require this package with Composer
 
@@ -57,10 +59,17 @@ $ php artisan vendor:publish --provider="Ytake\LaravelFluent\LogServiceProvider"
 
 ### All logs to fluentd
 
-edit config/app.php
+add fluent driver to config/logging.php
+
 ```php
-'log' => 'fluent',
+'fluent' => [
+    'driver' => 'fluent',
+],
 ```
+
+Edit .env to update LOG_CHANNEL.
+
+LOG_CHANNEL=fluent
 
 ## fluentd config sample
 
