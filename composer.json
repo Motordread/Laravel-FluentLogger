@@ -1,6 +1,6 @@
 {
   "name": "maksimru/laravel-fluent-logger",
-  "description": "fluent logger for laravel and lumen",
+  "description": "fluent logger for laravel and lumen with stackdriver support",
   "minimum-stability": "stable",
   "license": "MIT",
   "keywords": [
