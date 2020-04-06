@@ -23,5 +23,5 @@ return [
 
     'options' => [],
 
-    //'tagFormat' => '{{channel}}.{{level_name}}',
+    'tagFormat' => env('FLUENTD_TAGFORMAT', '{{channel}}.{{level_name}}'),
 ];
